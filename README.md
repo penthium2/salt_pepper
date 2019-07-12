@@ -1,5 +1,5 @@
 # salt_pepper
-Brute force encrypted file with cipher and pass
+Brute force encrypted file with cipher and pass.
 
 ### Usage 
 ```
@@ -18,6 +18,11 @@ More options:
 ```
 All files are saved in the **FLAGS** directory. 
 
+### Recovery 
+To retrieve the script and give it execution rights, it's easy to use the following commands:
+```
+git clone https://github.com/penthium2/salt_pepper.git ; cd salt_pepper ; chmod u+x salt-pepper
+```
 ### Example
 ```
 ./salt-pepper -f salted-file -p "PASSWORD" -t
