@@ -3,6 +3,9 @@
 # Tool Name: salt-pepper
 # Description: Brute force encrypted file with cipher and pass
 # Args: [-f SOURCE FILE] [-k PASSPHRASE]
+# More options : -t 	test results to find Unicode text file
+#		 -h	display help
+#		 -v	display version
 # Author: penthium2, Julien BRIAULT
 # Creation date: 07/12/2019
 # Last update:
