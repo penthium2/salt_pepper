@@ -15,16 +15,17 @@ yellow="\e[93m"
 resetcolor="\e[0m"
 
 # Vars 
-version="3.1"
+version="3.3"
 authors="penthium2, Julien BRIAULT"
 
 f_main() {
 cat << EOF
-Usage: ${0##*/} [-f SOURCE FILE] [-p PASS ]
+Usage: ${0##*/} [-f SOURCE FILE] [-p PASS ] [-t]
 
 Brute force encrypted file with cipher and pass
 
 	-f	encrypted source file 
+	-t 	test results
 	-p	passphrase 
 	-h	display help
 	-v	display version
@@ -50,30 +51,53 @@ echo -e "${red}Syntax error${resetcolor}"
 f_cipher() {
 declare -i nb=1  
 
-mkdir FLAGS
+dir=FLAGS
+
+if [[ -d "${dir}" ]]; then 
+	echo -e "${yellow}Folder already exist${resetcolor}"
+else
+	mkdir ${dir}
+fi
                                                                              
 for cipher in $(openssl list -cipher-commands) ; do                                           
 	if openssl  "$cipher" -d -in "${sfile}" -out FLAG  -pass pass:"${pass}" > /dev/null 2>&1 ; then                  		
-		mv FLAG FLAGS/FLAG_$cipher
+		mv FLAG ${dir}/FLAG_$cipher
 		match[$nb]=$cipher                                                            
 		nb+=1                                                                         
 	else                                                                                  
-		echo -e "${red}$cipher do nothing, try hard${resetcolor}"                                           
+	 	printf "%-50s%s\n" "$cipher~" "~[NOT MATCH]" | tr ' ~' '- '
 	fi                                                                                    
-	#read -p "debug" 
 done                                                                                          
 for result in $(seq ${#match[*]}) ; do
-	echo -e "${match[$result]} does something, please check ${green}FLAG_${match[$result]}${resetcolor}"          
+	printf "%-50s%s\n" "${match[$result]}~" "~[MATCH]" | tr ' ~' '- '
 done
+echo -e "${yellow}All results saved in $dir directory.${resetcolor}"
 }
 
+# Test if is a UTF-8/Unicode file
+f_test_results() {
+comres="$(file ${dir}/* | grep Unicode | wc -l)"
+if [[ -d "${dir}" ]]; then 
+	if [[ "$comrs" = 0 ]]; then 
+		echo -e "\n ${red}No results found for test.${resetcolor}"
+		exit 7
+	else 
+		echo -e "\nTest match: ${green}$(file ${dir}/* | grep Unicode | wc -l)${resetcolor}"
+		for results in $(file ${dfolder}/* | grep Unicode | sed "s#/##; s#:##" | awk '{print $1}') ; do 
+			echo -e "File: ${green}$results${resetcolor}"
+		done
+	fi
+else
+	f_err
+fi
+}
 # if no argument
 if [[ -z "$1" ]]; then 
 	f_err
 else
 	OPTIND=1
 
-	while getopts "hvf:p:" opt; do 
+	while getopts "hvtf:p:" opt; do 
 		case $opt in 
 			v) 
 				if [[ -z "$2" ]]; then 
@@ -93,7 +117,17 @@ else
 			f)
 				sfile=${OPTARG}
 				if [[ -n "${pass}" ]]; then 
-					f_cipher
+					if [[ -f "${sfile}" ]]; then 
+						if [[ -r "${sfile}" ]]; then 
+							f_cipher
+						else
+							echo -e "${red}You do not have read access to this file.${resetcolor}"
+							exit 5
+						fi
+					else
+						echo -e "${red}The specified value is not a file.${resetcolor}"
+						exit 4
+					fi
 				fi
 				;;
 			p)
@@ -102,6 +136,10 @@ else
 					f_cipher
 				fi
 				;;
+			t)
+				f_test_results	
+				;;
+				
 		esac
 	done
 	shift "$((OPTIND-1))"	
