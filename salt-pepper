@@ -6,6 +6,7 @@
 # Author: penthium2, Julien BRIAULT
 # Creation date: 07/12/2019
 # Last update:
+# Print the name file match when "-t" option used
 #=================================================================
 
 # Colors var
@@ -15,7 +16,7 @@ yellow="\e[93m"
 resetcolor="\e[0m"
 
 # Vars 
-version="3.3"
+version="3.4"
 authors="penthium2, Julien BRIAULT"
 
 f_main() {
@@ -82,7 +83,7 @@ if [[ -d "${dir}" ]]; then
 		echo -e "\n ${red}No results found for test.${resetcolor}"
 		exit 7
 	else 
-		echo -e "\nTest match: ${green}$(file ${dir}/* | grep Unicode | wc -l)${resetcolor}"
+		echo -e "\nTest match: ${green}$(file ${dir}/* | grep -n Unicode | awk -F":" '{print $2 }' )${resetcolor}"
 		for results in $(file ${dfolder}/* | grep Unicode | sed "s#/##; s#:##" | awk '{print $1}') ; do 
 			echo -e "File: ${green}$results${resetcolor}"
 		done
