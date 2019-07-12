@@ -60,6 +60,7 @@ for cipher in $(openssl list -cipher-commands) ; do
 	else                                                                                  
 		echo -e "${red}$cipher do nothing, try hard${resetcolor}"                                           
 	fi                                                                                    
+	#read -p "debug" 
 done                                                                                          
 for result in $(seq ${#match[*]}) ; do
 	echo -e "${match[$result]} does something, please check ${green}FLAG_${match[$result]}${resetcolor}"          
@@ -91,17 +92,13 @@ else
 				;;
 			f)
 				sfile=${OPTARG}
-				if [[ -z "${pass}" ]]; then 
-					f_syn_err
-				else
+				if [[ -n "${pass}" ]]; then 
 					f_cipher
 				fi
 				;;
 			p)
 				pass=${OPTARG}
-				if [[ -z "${sfile}" ]]; then 
-					f_syn_err
-				else
+				if [[ -n "${sfile}" ]]; then 
 					f_cipher
 				fi
 				;;
