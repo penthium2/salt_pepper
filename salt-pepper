@@ -1,17 +1,111 @@
-#!/bin/bash                                                                                   
-#Version 3.0                                                                                  
-source="$1"                                                                                   
-key="$2"                                                                                      
-declare -i nb=1                                                                               
+#!/bin/bash
+#=================================================================
+# Tool Name: salt-pepper
+# Description: Brute force encrypted file with cipher and pass
+# Args: [-f SOURCE FILE] [-k PASSPHRASE]
+# Author: Frederic THOUIN, Julien BRIAULT
+# Creation date: 07/12/2019
+# Last update:
+#=================================================================
+
+# Colors var
+red="\e[91m"
+green="\e[92m"
+yellow="\e[93m"
+resetcolor="\e[0m"
+
+# Vars 
+version="3.1"
+authors="Frederic THOUIN, Julien BRIAULT"
+
+f_main() {
+cat << EOF
+Usage: ${0##*/} [-f SOURCE FILE] [-p PASS ]
+
+Brute force encrypted file with cipher and pass
+
+	-f	encrypted source file 
+	-p	passphrase 
+	-h	display help
+	-v	display version
+
+EOF
+exit 0
+}
+
+# Random error
+f_err() {
+cat << EOF
+Try '${0##*/} -h' for more informations.
+EOF
+exit 1
+}
+
+# Syntax error
+f_syn_err() {
+echo -e "${red}Syntax error${resetcolor}"
+}
+
+# Test salt
+f_cipher() {
+declare -i nb=1  
+
+mkdir FLAGS
+                                                                             
 for cipher in $(openssl list -cipher-commands) ; do                                           
-        if openssl  "$cipher" -d -in "$source" -out FLAG  -pass pass:"$key" > /dev/null 2>&1 ; then                                                                                         
-                mv FLAG FLAG_$cipher                                                          
-                match[$nb]=$cipher                                                            
-                nb+=1                                                                         
-        else                                                                                  
-                echo "$cipher do nothing, try hard"                                           
-        fi                                                                                    
+	if openssl  "$cipher" -d -in "${sfile}" -out FLAG  -pass pass:"${pass}" > /dev/null 2>&1 ; then                  		
+		mv FLAG FLAGS/FLAG_$cipher
+		match[$nb]=$cipher                                                            
+		nb+=1                                                                         
+	else                                                                                  
+		echo -e "${red}$cipher do nothing, try hard${resetcolor}"                                           
+	fi                                                                                    
 done                                                                                          
-for result in $(seq ${#match[*]}) ; do                                                        
-        echo "${match[$result]} does something, please check FLAG_${match[$result]}"          
-done 
+for result in $(seq ${#match[*]}) ; do
+	echo -e "${match[$result]} does something, please check ${green}FLAG_${match[$result]}${resetcolor}"          
+done
+}
+
+# if no argument
+if [[ -z "$1" ]]; then 
+	f_err
+else
+	OPTIND=1
+
+	while getopts "hvf:p:" opt; do 
+		case $opt in 
+			v) 
+				if [[ -z "$2" ]]; then 
+					echo -e "${0##*/} version ${yellow}$version${resetcolor}"
+					echo "Authors: $authors"
+				elif [[ "$2" = "-h" ]];then 
+					f_syn_err && f_err
+				fi
+				;;
+			h)
+				if [[ -z "$2" ]]; then 
+					f_main
+				elif [[ "$2" = "-v" ]]; then 
+					f_syn_err && f_err
+				fi
+				;;
+			f)
+				sfile=${OPTARG}
+				if [[ -z "${pass}" ]]; then 
+					f_syn_err
+				else
+					f_cipher
+				fi
+				;;
+			p)
+				pass=${OPTARG}
+				if [[ -z "${sfile}" ]]; then 
+					f_syn_err
+				else
+					f_cipher
+				fi
+				;;
+		esac
+	done
+	shift "$((OPTIND-1))"	
+fi
