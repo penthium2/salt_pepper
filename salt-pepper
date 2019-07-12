@@ -1,0 +1,17 @@
+#!/bin/bash                                                                                   
+#Version 3.0                                                                                  
+source="$1"                                                                                   
+key="$2"                                                                                      
+declare -i nb=1                                                                               
+for cipher in $(openssl list -cipher-commands) ; do                                           
+        if openssl  "$cipher" -d -in "$source" -out FLAG  -pass pass:"$key" > /dev/null 2>&1 ; then                                                                                         
+                mv FLAG FLAG_$cipher                                                          
+                match[$nb]=$cipher                                                            
+                nb+=1                                                                         
+        else                                                                                  
+                echo "$cipher do nothing, try hard"                                           
+        fi                                                                                    
+done                                                                                          
+for result in $(seq ${#match[*]}) ; do                                                        
+        echo "${match[$result]} does something, please check FLAG_${match[$result]}"          
+done 
