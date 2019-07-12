@@ -7,7 +7,7 @@ Usage: salt-pepper [-f SOURCE FILE] [-p PASS ] [-t]
 
 Brute force encrypted file with cipher and pass
 
-Arguments: 
+Main options: 
 	-f	encrypted source file 
 	-p	passphrase 
 	
