@@ -8,7 +8,7 @@ Usage: salt-pepper [-f SOURCE FILE] [-p PASS ] [-t]
 Brute force encrypted file with cipher and pass
 
 	-f	encrypted source file 
-	-t 	test results
+	-t 	test results to find Unicode text file
 	-p	passphrase 
 	-h	display help
 	-v	display version
