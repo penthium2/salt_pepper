@@ -3,7 +3,7 @@
 # Tool Name: salt-pepper
 # Description: Brute force encrypted file with cipher and pass
 # Args: [-f SOURCE FILE] [-k PASSPHRASE]
-# Author: Frederic THOUIN, Julien BRIAULT
+# Author: penthium2, Julien BRIAULT
 # Creation date: 07/12/2019
 # Last update:
 #=================================================================
@@ -16,7 +16,7 @@ resetcolor="\e[0m"
 
 # Vars 
 version="3.1"
-authors="Frederic THOUIN, Julien BRIAULT"
+authors="penthium2, Julien BRIAULT"
 
 f_main() {
 cat << EOF
