@@ -20,7 +20,7 @@ yellow="\e[93m"
 resetcolor="\e[0m"
 
 # Vars 
-version="3.5"
+version="3.6"
 authors="penthium2, Julien BRIAULT"
 
 f_main() {
@@ -97,6 +97,31 @@ else
 	f_err
 fi
 }
+
+# Check OpenSSL version 
+f_check_ver() {
+openssl_ver="$(openssl version)"
+	# error message if the version is not more than 1.1.*
+	f_ver_err() {
+		echo -e "${red}Your OpenSSL version is too old: $openssl_ver${resetcolor}"
+        	echo -e "Please install version ${yellow}1.1.1 or later${resetcolor}"
+        	exit 9
+	}
+
+case $openssl_ver in
+	*1.0*)
+		f_ver_err
+		;;
+	*0.9*)
+		f_ver_err
+		;;
+	*1.1.0*)
+		f_ver_err
+		;;
+esac
+}
+
+f_check_ver
 
 # if no argument
 if [[ -z "$1" ]]; then 
