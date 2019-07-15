@@ -7,12 +7,14 @@ Usage: salt-pepper [-f SOURCE FILE] [-p PASS ] [-t]
 
 Brute force encrypted file with cipher and pass
 
-Main options: 
+Main options:
 	-f	encrypted source file 
 	-p	passphrase 
 	
 More options:
-	-t 	test results to find Unicode text file	
+	-t 	test results
+	-u	return Unicode text file
+	-a	return ASCII text file
 	-h	display help
 	-v	display version
 ```
@@ -24,10 +26,14 @@ To retrieve the script and give it execution rights, it's easy to use the follow
 git clone https://github.com/penthium2/salt_pepper.git ; cd salt_pepper ; chmod u+x salt-pepper
 ```
 ## Example
+Test all possible algorihtms and then display the number of files that correspond to the **ascii** or **unicode** format.
 ```
 ./salt-pepper -f salted-file -p "PASSWORD" -t
 ```
-> The `-t` option allows you to check if a file is in Unicode format.
+Display the file in Unicode format:
+```
+./salt-pepper -f salted-file -p "PASSWORD" -u
+```
 
 ---
 Suggestions/improvements
