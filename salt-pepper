@@ -1,17 +1,22 @@
 #!/bin/bash
-#=================================================================
+
+#==============================================================================
 # Tool Name: salt-pepper
 # Description: Brute force encrypted file with cipher and pass.
 # Args: [-f SOURCE FILE] [-k PASSPHRASE]
 # More options: 
-#		 -t test results to find Unicode text file
+#		 -t 	test results
 #		 -h	display help
 #		 -v	display version
+#		 -u	return Unicode text file
+#		 -a	return ASCII text file
 # Authors: penthium2, Julien BRIAULT
 # Creation date: 07/12/2019
 # Last update:
-# Print the name file match when '-t' option used
-#=================================================================
+# Modification of the option '-t' which outputs the 
+# number of files that match for the ascii or unicode format.
+# Added option'-u' to display the file that matches in unicode,'-a' for ascii.
+#==============================================================================
 
 # Colors var
 red="\e[91m"
@@ -22,6 +27,8 @@ resetcolor="\e[0m"
 # Vars 
 version="3.6"
 authors="penthium2, Julien BRIAULT"
+unifiles="$(file ${dir}/* | grep Unicode | wc -l)"
+ascfiles="$(file ${dir}/* | grep ASCII | wc -l)"
 
 f_main() {
 cat << EOF
@@ -34,7 +41,9 @@ Main options:
 	-p	passphrase 
 	
 More options:
-	-t 	test results to find Unicode text file
+	-t 	test results
+	-u	return Unicode text file
+	-a	return ASCII text file
 	-h	display help
 	-v	display version
 
@@ -81,55 +90,52 @@ done
 echo -e "${yellow}All results saved in $dir directory.${resetcolor}"
 }
 
-# Test if is a UTF-8/Unicode file
+# Tests the number of files that match in unicode and ascii
 f_test_results() {
-comres="$(file ${dir}/* | grep Unicode | wc -l)"
+echo -e "\nUnicode file detected: ${yellow}$unifiles${resetcolor}"
+echo -e "ASCII file detected: ${yellow}$ascfiles${resetcolor}"
+}
+
+# Test if is a UTF-8/Unicode file
+f_test_unicode() {
 if [[ -d "${dir}" ]]; then 
-	if [[ "$comrs" = 0 ]]; then 
-		echo -e "\n ${red}No results found for test.${resetcolor}"
-		exit 7
-	else 
-		for results in $(file ${dir}/* | grep -n Unicode | awk -F":" '{print $2 }' ) ; do 
-			echo -e "Test match with: ${green}$results${resetcolor}"
-		done
-	fi
-else
-	f_err
+        if [[ "$unifiles" = 0 ]]; then 
+                echo -e "\n${red}No result for the file test in Unicode/UTF-8 format.${resetcolor}"
+                exit 7
+        else    
+                for uniresults in $(file ${dir}/* | grep -n Unicode | awk -F":" '{print $2 }' ) ; do
+                        echo -e "File found: ${green}$uniresults${resetcolor}"
+                done
+        fi
+else    
+        f_err
 fi
 }
 
-# Check OpenSSL version 
-f_check_ver() {
-openssl_ver="$(openssl version)"
-	# error message if the version is not more than 1.1.*
-	f_ver_err() {
-		echo -e "${red}Your OpenSSL version is too old: $openssl_ver${resetcolor}"
-        	echo -e "Please install version ${yellow}1.1.1 or later${resetcolor}"
-        	exit 9
-	}
-
-case $openssl_ver in
-	*1.0*)
-		f_ver_err
-		;;
-	*0.9*)
-		f_ver_err
-		;;
-	*1.1.0*)
-		f_ver_err
-		;;
-esac
+# Test if is a ASCII/US-ASCII file
+f_test_ascii() {
+if [[ -d "${dir}" ]]; then  
+        if [[ "$ascfiles" = 0 ]]; then 
+                echo -e "\n${red}No result for the file test in ASCII/US-ASCII format.${resetcolor}"
+                exit 7
+        else    
+                for ascresults in $(file ${dir}/* | grep -n ASCII | awk -F":" '{print $2 }' ) ; do
+                        echo -e "File found: ${green}$ascresults${resetcolor}"
+                done
+        fi
+else    
+        f_err
+fi
 }
 
-f_check_ver
 
-# if no argument
+# If no argument
 if [[ -z "$1" ]]; then 
 	f_err
 else
 	OPTIND=1
 
-	while getopts "hvtf:p:" opt; do 
+	while getopts "hvuatf:p:" opt; do 
 		case $opt in 
 			v) 
 				if [[ -z "$2" ]]; then 
@@ -170,6 +176,12 @@ else
 				;;
 			t)
 				f_test_results	
+				;;
+			u)
+				f_test_unicode	
+				;;
+			a)
+				f_test_ascii
 				;;
 		esac
 	done
