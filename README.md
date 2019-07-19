@@ -1,5 +1,15 @@
-# salt_pepper
-Brute force encrypted file with cipher and pass.
+<h1 align="center">SALT PEPPER</h1>
+<p align="center">
+	Brute force encrypted file with cipher and pass.
+	<br>
+	<br>
+  <a href="https://github.com/penthium2/salt_pepper/pulls">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?longCache=true" alt="Pull Requests">
+  </a>
+  <a href="http://www.gnu.org/licenses/">
+    <img src="https://img.shields.io/badge/License-GNU-blue.svg?longCache=true" alt="License">
+  </a>
+</p>
 
 ## Usage 
 ```
@@ -36,5 +46,4 @@ Display the file in Unicode format:
 ```
 
 ---
-Suggestions/improvements
-[welcome](https://github.com/penthium2/salt_pepper/issues)!
+Report any type of problems [here](https://github.com/penthium2/salt_pepper/issues)!
