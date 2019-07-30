@@ -27,8 +27,6 @@ resetcolor="\e[0m"
 # Vars 
 version="3.6"
 authors="penthium2, Julien BRIAULT"
-unifiles="$(file ${dir}/* | grep Unicode | wc -l)"
-ascfiles="$(file ${dir}/* | grep ASCII | wc -l)"
 
 f_main() {
 cat << EOF
@@ -72,6 +70,14 @@ dir=FLAGS
 
 if [[ -d "${dir}" ]]; then 
 	echo -e "${yellow}Folder already exist${resetcolor}"
+	echo -e "${yellow}Removing all file ?${resetcolor}"
+        read -p "Yes/no default Yes" remove
+        if [[ "${remove}" = [Yy] || -z "${remove}" ]] ; then
+                rm -rf ${dir}/*
+        else
+                exit 8
+        fi
+
 else
 	mkdir ${dir}
 fi
@@ -92,14 +98,14 @@ echo -e "${yellow}All results saved in $dir directory.${resetcolor}"
 
 # Tests the number of files that match in unicode and ascii
 f_test_results() {
-echo -e "\nUnicode file detected: ${yellow}$unifiles${resetcolor}"
-echo -e "ASCII file detected: ${yellow}$ascfiles${resetcolor}"
+echo -e "\nUnicode file detected: ${yellow}$(file ${dir}/* | grep Unicode | wc -l)${resetcolor}"
+echo -e "ASCII file detected: ${yellow}$(file ${dir}/* | grep ASCII | wc -l)${resetcolor}"
 }
 
 # Test if is a UTF-8/Unicode file
 f_test_unicode() {
 if [[ -d "${dir}" ]]; then 
-        if [[ "$unifiles" = 0 ]]; then 
+        if [[ "$(file ${dir}/* | grep Unicode | wc -l)" = 0 ]]; then 
                 echo -e "\n${red}No result for the file test in Unicode/UTF-8 format.${resetcolor}"
                 exit 7
         else    
@@ -115,7 +121,7 @@ fi
 # Test if is a ASCII/US-ASCII file
 f_test_ascii() {
 if [[ -d "${dir}" ]]; then  
-        if [[ "$ascfiles" = 0 ]]; then 
+        if [[ "$(file ${dir}/* | grep ASCII | wc -l)" = 0 ]]; then 
                 echo -e "\n${red}No result for the file test in ASCII/US-ASCII format.${resetcolor}"
                 exit 7
         else    
