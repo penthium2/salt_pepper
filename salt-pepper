@@ -12,7 +12,7 @@
 #		 -a	return ASCII text file
 # Authors: penthium2, Julien BRIAULT
 # Creation date: 07/12/2019
-# Last update:
+# Last update: 07/30/2019
 # Modification of the option '-t' which outputs the 
 # number of files that match for the ascii or unicode format.
 # Added option'-u' to display the file that matches in unicode,'-a' for ascii.
@@ -25,7 +25,7 @@ yellow="\e[93m"
 resetcolor="\e[0m"
 
 # Vars 
-version="3.6"
+version="3.7"
 authors="penthium2, Julien BRIAULT"
 
 f_main() {
