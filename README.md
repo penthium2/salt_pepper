@@ -8,6 +8,9 @@
   </a>
   <a href="http://www.gnu.org/licenses/">
     <img src="https://img.shields.io/badge/License-GNU-blue.svg?longCache=true" alt="License">
+  </a>	
+  <a href="https://github.com/ellerbrock/open-source-badges/">
+    <img src="https://badges.frapsoft.com/bash/v1/bash.png?v=103" alt="Bash">
   </a>
 </p>
 
